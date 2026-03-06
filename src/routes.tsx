@@ -6,6 +6,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 
 import { Produtos } from './pages/Produtos'
+import { PortalInterno } from './pages/PortalInterno'
 
 import { AppLayout } from './pages/AppLayout'
 import { Admin } from './pages/Admin'
@@ -30,13 +31,14 @@ export const AppRoutes = () => {
 
           {/* Rotas protegidas */}
           <Route
-            path="/app"
+            path="/"
             element={
               <ProtectedRoute>
                 <AppLayout />
               </ProtectedRoute>
             }
           >
+            <Route path="portal-interno" element={<PortalInterno />} />
             <Route path="admin" element={<Admin />} />
             <Route path="estoque" element={<Estoque />} />
             <Route path="estoque/parametrizacoes" element={<EstoqueParametrizacoes />} />

@@ -13,6 +13,7 @@ import { useAuth } from '../context/AuthContext'
 import { authService } from '../services/authService'
 import logo from '../assets/logo.svg'
 import loginFrame from '../assets/login_frame.png'
+import { APP_DEFAULT_PATH } from '../config/modules'
 
 export const Login = () => {
   const [email, setEmail] = useState('')
@@ -40,7 +41,7 @@ export const Login = () => {
 
     try {
       await login(email, senha)
-      navigate('/')
+      navigate(APP_DEFAULT_PATH)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao fazer login'
       setError(errorMessage)

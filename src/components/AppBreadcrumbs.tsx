@@ -1,6 +1,6 @@
 import { HStack, Text, chakra } from '@chakra-ui/react'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
-import { moduleFromPathname } from '../config/modules'
+import { APP_DEFAULT_PATH, moduleFromPathname } from '../config/modules'
 
 type Crumb = { label: string; to: string }
 
@@ -8,6 +8,7 @@ const RouterLinkChakra = chakra(RouterLink)
 
 const ROUTE_LABELS: Record<string, string> = {
   '/': 'Início',
+  '/portal-interno': 'Portal Interno',
 
   // Estoque
   '/estoque': 'Gestão de Matérias Primas',
@@ -33,9 +34,12 @@ const titleFromSegment = (seg: string) => {
 const buildCrumbs = (pathname: string): Crumb[] => {
   const path = pathname || '/'
   if (path === '/login') return []
+  if (path === APP_DEFAULT_PATH) {
+    return [{ label: ROUTE_LABELS['/'] ?? 'Início', to: APP_DEFAULT_PATH }]
+  }
 
   const module = moduleFromPathname(path)
-  const out: Crumb[] = [{ label: ROUTE_LABELS['/'] ?? 'Início', to: '/' }]
+  const out: Crumb[] = [{ label: ROUTE_LABELS['/'] ?? 'Início', to: APP_DEFAULT_PATH }]
 
   if (module) {
     out.push({ label: module.label, to: module.path })

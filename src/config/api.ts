@@ -17,4 +17,6 @@ export const API_ENDPOINTS = {
     categorias: '/api/estoque/categorias',
     unidades: '/api/estoque/unidades',
   },
+  produtos: '/api/produtos',
 }
+

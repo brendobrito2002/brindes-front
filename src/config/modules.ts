@@ -19,6 +19,8 @@ export const APP_MODULES: AppModule[] = [
   { key: 'gestao-arquivos', label: 'Gestão de Arquivos', path: '/gestao-arquivos' },
 ]
 
+export const APP_DEFAULT_PATH = '/portal-interno'
+
 export const moduleFromPathname = (pathname: string) => {
   return APP_MODULES.find((m) => pathname === m.path || pathname.startsWith(`${m.path}/`)) ?? null
 }
