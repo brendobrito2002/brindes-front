@@ -1,9 +1,17 @@
-// Configuração global da API - constante que pode ser facilmente alterada
-export const API_BASE_URL = 'https://brindes-back.onrender.com'
+const RAW_API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
+if (!RAW_API_BASE_URL) {
+  throw new Error('A variável VITE_API_BASE_URL deve ser definida no arquivo .env')
+}
+
+export const API_BASE_URL = RAW_API_BASE_URL.replace(/\/$/, '')
+
+export const apiUrl = (path: string) => `${API_BASE_URL}${path}`
 
 export const API_ENDPOINTS = {
   auth: {
     login: '/api/auth/login',
+    register: '/api/auth/register',
     forgotPassword: '/api/auth/forgot-password',
     resetPassword: '/api/auth/reset-password',
   },

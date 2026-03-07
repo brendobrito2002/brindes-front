@@ -1,13 +1,14 @@
 import { Navigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import { Box, Spinner, VStack } from '@chakra-ui/react'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
+  allowCliente?: boolean
 }
 
-export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { isAuthenticated, loading } = useAuth()
+export const ProtectedRoute = ({ children, allowCliente = false }: ProtectedRouteProps) => {
+  const { isAuthenticated, loading, user } = useAuth()
 
   if (loading) {
     return (
@@ -26,6 +27,10 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />
+  }
+
+  if (!allowCliente && user?.tipoUsuario === 'CLIENTE') {
+    return <Navigate to="/" replace />
   }
 
   return <>{children}</>

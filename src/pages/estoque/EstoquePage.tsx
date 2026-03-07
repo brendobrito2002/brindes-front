@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Box, Button, Container, DialogBackdrop, DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogPositioner,
    DialogRoot, DialogTitle, Flex, HStack, Heading, Stack, Text } from '@chakra-ui/react'
 import { CardsResumoGrid, MovimentacoesTable, ProdutosTable, SearchInput, SectionCard, SelectLike } from './components'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
 import { estoqueService } from '../../services/estoqueService'
 import type { EstoqueResumoResponse, MateriaPrimaResponse } from '../../types/estoqueServiceTypes'
 import { materiaPrimaService } from '../../services/parametrizacoes/materiaPrimaService'

@@ -1,5 +1,5 @@
 import { Box, Container, Heading, Text } from '@chakra-ui/react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import { AppBreadcrumbs } from '../components/AppBreadcrumbs'
 
 export const Perfil = () => {

@@ -18,7 +18,7 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
 import { materiaPrimaService } from '../../services/parametrizacoes/materiaPrimaService'
 
 const FieldLabel = ({ children }: { children: string }) => (

@@ -1,23 +1,6 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
-
-export interface User {
-  id: number
-  nome: string
-  email: string
-  perfis: string[]
-}
-
-interface AuthContextType {
-  isAuthenticated: boolean
-  user: User | null
-  token: string | null
-  login: (email: string, senha: string) => Promise<void>
-  logout: () => void
-  loading: boolean
-  error: string | null
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+import { useState, useEffect, type ReactNode } from 'react'
+import { apiUrl, API_ENDPOINTS } from '../config/api'
+import { AuthContext, type User } from './authContextTypes'
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -51,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     
     try {
       console.log('Iniciando login para:', email)
-      const response = await fetch('https://brindes-back.onrender.com/api/auth/login', {
+      const response = await fetch(apiUrl(API_ENDPOINTS.auth.login), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,21 +60,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Guardar dados no localStorage
       localStorage.setItem('token', data.token)
-      localStorage.setItem('user', JSON.stringify({
+      const loggedUser: User = {
         id: data.id,
         nome: data.nome,
         email: data.email,
+        tipoUsuario: data.tipoUsuario,
         perfis: data.perfis,
-      }))
+      }
+      localStorage.setItem('user', JSON.stringify(loggedUser))
       
       setToken(data.token)
-      setUser({
-        id: data.id,
-        nome: data.nome,
-        email: data.email,
-        perfis: data.perfis,
-      })
+      setUser(loggedUser)
       setIsAuthenticated(true)
+      return loggedUser
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido'
       console.error('Erro no login:', errorMessage)
@@ -115,12 +96,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </AuthContext.Provider>
   )
-}
-
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth deve ser usado dentro de AuthProvider')
-  }
-  return context
 }

@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Home } from './pages/Home'
 import { ProdutoDetalhe } from './pages/ProdutoDetalhe'
 import { Login } from './pages/Login'
+import { Register } from './pages/Register'
+import { MeuPerfil } from './pages/MeuPerfil'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 
@@ -28,6 +30,15 @@ export const AppRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/produto/:id" element={<ProdutoDetalhe />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Register />} />
+          <Route
+            path="/meu-perfil"
+            element={
+              <ProtectedRoute allowCliente>
+                <MeuPerfil />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Rotas protegidas */}
           <Route

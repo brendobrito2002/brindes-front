@@ -1,25 +1,32 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Box,
   Button,
   Container,
+  HStack,
   Input,
   Text,
   VStack,
   Heading,
 } from '@chakra-ui/react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import { authService } from '../services/authService'
 import logo from '../assets/logo.svg'
 import loginFrame from '../assets/login_frame.png'
 import { APP_DEFAULT_PATH } from '../config/modules'
+
+interface LoginLocationState {
+  registeredEmail?: string
+  registerSuccess?: boolean
+}
 
 export const Login = () => {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [registerSuccessMessage, setRegisterSuccessMessage] = useState('')
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [showResetPassword, setShowResetPassword] = useState(false)
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('')
@@ -32,7 +39,27 @@ export const Login = () => {
   const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false)
   
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const location = useLocation()
+  const { login, isAuthenticated, loading, user } = useAuth()
+
+  useEffect(() => {
+    const state = (location.state ?? {}) as LoginLocationState
+    if (state.registerSuccess) {
+      setRegisterSuccessMessage('Cadastro realizado com sucesso. Faça seu login para continuar.')
+      if (state.registeredEmail) {
+        setEmail(state.registeredEmail)
+      }
+      navigate(location.pathname, { replace: true, state: null })
+    }
+  }, [location.pathname, location.state, navigate])
+
+  useEffect(() => {
+    if (loading || !isAuthenticated || !user) {
+      return
+    }
+
+    navigate(user.tipoUsuario === 'CLIENTE' ? '/' : APP_DEFAULT_PATH, { replace: true })
+  }, [isAuthenticated, loading, navigate, user])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,8 +67,8 @@ export const Login = () => {
     setIsLoading(true)
 
     try {
-      await login(email, senha)
-      navigate(APP_DEFAULT_PATH)
+      const loggedUser = await login(email, senha)
+      navigate(loggedUser.tipoUsuario === 'CLIENTE' ? '/' : APP_DEFAULT_PATH)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao fazer login'
       setError(errorMessage)
@@ -192,6 +219,21 @@ export const Login = () => {
                 </Box>
               )}
 
+              {registerSuccessMessage && (
+                <Box
+                  bg="green.50"
+                  border="1px solid"
+                  borderColor="green.200"
+                  p={3}
+                  borderRadius="md"
+                  w="full"
+                >
+                  <Text color="green.800" fontSize="sm">
+                    {registerSuccessMessage}
+                  </Text>
+                </Box>
+              )}
+
               <VStack w="full" align="start" gap={2}>
                 <Text as="label" fontSize="sm" fontWeight="medium">
                   Email
@@ -257,16 +299,28 @@ export const Login = () => {
                 LOGIN
               </Button>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                color="slate.900"
-                fontSize="xs"
-                onClick={() => setShowForgotPassword(true)}
-                _hover={{ textDecoration: 'underline' }}
-              >
-                Esqueceu sua senha?
-              </Button>
+              <HStack w="full" justify="space-between" gap={2} flexWrap="wrap">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  color="slate.900"
+                  fontSize="xs"
+                  onClick={() => setShowForgotPassword(true)}
+                  _hover={{ textDecoration: 'underline' }}
+                >
+                  Esqueceu sua senha?
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  color="slate.900"
+                  fontSize="xs"
+                  onClick={() => navigate('/cadastro')}
+                  _hover={{ textDecoration: 'underline' }}
+                >
+                  Cadastre-se
+                </Button>
+              </HStack>
             </VStack>
           ) : showForgotPassword && !showResetPassword ? (
             // TELA DE RECUPERAÇÃO DE SENHA

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Box, Button, Flex, HStack, Image, Text, VStack } from '@chakra-ui/react'
 import logo from '../assets/logo.svg'
 import { APP_MODULES, moduleFromPathname } from '../config/modules'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import { CheckIcon, ChevronDownIcon, GearIcon, ProfileIcon, UserCircleIcon } from './icons'
 import { useOutsideDismiss } from './useOutsideDismiss'
 
