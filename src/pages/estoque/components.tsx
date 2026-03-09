@@ -153,7 +153,7 @@ export const SearchInput = ({
 }) => {
   return (
     <Box position="relative" minW={minW}>
-      <Box position="absolute" left={3} top="50%" transform="translateY(-50%)" color="gray.400">
+      <Box position="absolute" left={3} top="50%" transform="translateY(-50%)" color="gray.400" zIndex={1} pointerEvents="none">
         <SearchIcon />
       </Box>
       <Input

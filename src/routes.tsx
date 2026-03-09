@@ -36,14 +36,13 @@ export const AppRoutes = () => {
             <Route path="admin" element={<Admin />} />
             <Route path="estoque" element={<Estoque />} />
             <Route path="estoque/parametrizacoes" element={<EstoqueParametrizacoes />} />
+            <Route path="produtos" element={<Produtos />} />
             <Route path="compras" element={<Compras />} />
             <Route path="vendas-clientes" element={<VendasClientes />} />
             <Route path="gestao-arquivos" element={<GestaoArquivos />} />
             <Route path="perfil" element={<Perfil />} />
             <Route path="configuracoes" element={<Configuracoes />} />
           </Route>
-
-          <Route path="produtos" element={<Produtos />} />
 
           {/* Redirecionar qualquer rota não encontrada para login */}
           <Route path="*" element={<Navigate to="/login" replace />} />
