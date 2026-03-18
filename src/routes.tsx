@@ -8,10 +8,8 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { CarrinhoPage } from './pages/CarrinhoPage'
-
 import { Produtos } from './pages/Produtos'
 import { PortalInterno } from './pages/PortalInterno'
-
 import { AppLayout } from './pages/AppLayout'
 import { Admin } from './pages/Admin'
 import { Estoque } from './pages/Estoque'
@@ -24,70 +22,75 @@ import { EstoqueParametrizacoes } from './pages/EstoqueParametrizacoes'
 import { MeusOrcamentos } from './pages/MeusOrcamentos'
 import { OrcamentoDetalhe } from './pages/OrcamentoDetalhe'
 
-
 export const AppRoutes = () => {
   return (
     <Router>
       <AuthProvider>
         <CartProvider>
-        <Routes>
-          {/* Rotas públicas */}
-          <Route path="/" element={<Home />} />
-          <Route path="/produto/:id" element={<ProdutoDetalhe />} />
-          <Route path="/carrinho" element={<CarrinhoPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/cadastro" element={<Register />} />
-          <Route
-            path="/meus-orcamentos"
-            element={
-              <ProtectedRoute allowCliente>
-                <MeusOrcamentos />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/meus-orcamentos/:id"
-            element={
-              <ProtectedRoute allowCliente>
-                <OrcamentoDetalhe />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/meu-perfil"
-            element={
-              <ProtectedRoute allowCliente>
-                <MeuPerfil />
-              </ProtectedRoute>
-            }
-          />
+          <Routes>
+            {/* Rotas públicas */}
+            <Route path="/" element={<Home />} />
+            <Route path="/produto/:id" element={<ProdutoDetalhe />} />
+            <Route path="/carrinho" element={<CarrinhoPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/cadastro" element={<Register />} />
 
-          {/* Rotas protegidas */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="portal-interno" element={<PortalInterno />} />
-            <Route path="admin" element={<Admin />} />
-            <Route path="estoque" element={<Estoque />} />
-            <Route path="estoque/parametrizacoes" element={<EstoqueParametrizacoes />} />
-            <Route path="produtos" element={<Produtos />} />
-            <Route path="compras" element={<Compras />} />
-            <Route path="vendas-clientes" element={<VendasClientes />} />
-            <Route path="gestao-arquivos" element={<GestaoArquivos />} />
-            <Route path="perfil" element={<Perfil />} />
-            <Route path="configuracoes" element={<Configuracoes />} />
-            <Route path="produtos" element={<Produtos />} />
-          </Route>
+            {/* Rotas para CLIENTE autenticado */}
+            <Route
+              path="/meus-orcamentos"
+              element={
+                <ProtectedRoute allowCliente>
+                  <MeusOrcamentos />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/meus-orcamentos/:id"
+              element={
+                <ProtectedRoute allowCliente>
+                  <OrcamentoDetalhe />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/meu-perfil"
+              element={
+                <ProtectedRoute allowCliente>
+                  <MeuPerfil />
+                </ProtectedRoute>
+              }
+            />
 
+            {/* Layout interno + rotas protegidas para FUNCIONARIO e ADMIN */}
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="portal-interno" element={<PortalInterno />} />
+              <Route path="compras" element={<Compras />} />
+              <Route path="perfil" element={<Perfil />} />
+              <Route path="configuracoes" element={<Configuracoes />} />
 
-          {/* Redirecionar qualquer rota não encontrada para login */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
+              {/* Rotas que FUNCIONARIO e ADMIN acessam */}
+              <Route path="estoque" element={<Estoque />} />
+              <Route path="estoque/parametrizacoes" element={<EstoqueParametrizacoes />} />
+              <Route path="produtos" element={<Produtos />} />
+              <Route path="vendas-clientes" element={<VendasClientes />} />
+              <Route path="gestao-arquivos" element={<GestaoArquivos />} />
+
+              {/* Apenas ADMIN */}
+              <Route element={<ProtectedRoute requireAdmin />}>
+                <Route path="admin" element={<Admin />} />
+              </Route>
+            </Route>
+
+            {/* Redirecionar qualquer rota não encontrada para login */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
         </CartProvider>
       </AuthProvider>
     </Router>

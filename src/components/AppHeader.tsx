@@ -11,26 +11,36 @@ const headerShadow = '0px 2px 6px rgba(0, 0, 0, 0.25)'
 
 const roleLabelFromPerfis = (perfis?: string[]) => {
   if (!perfis || perfis.length === 0) return 'Usuário'
+
   const normalized = perfis.map((p) => p.toUpperCase())
-  if (normalized.some((p) => p.includes('ADMIN'))) return 'Administrador'
-  return perfis[0]
+
+  if (normalized.some((p) => p.includes('ADMIN'))) {
+    return 'Administrador'
+  }
+
+  if (normalized.some((p) => p.includes('FUNCIONARIO'))) {
+    return 'Funcionário'
+  }
+
+  return 'Usuário'
 }
 
 export const AppHeader = () => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-
   const selectedModule = useMemo(() => moduleFromPathname(location.pathname), [location.pathname])
-
   const [isModuleOpen, setIsModuleOpen] = useState(false)
   const [isUserOpen, setIsUserOpen] = useState(false)
-
   const moduleRef = useRef<HTMLDivElement | null>(null)
   const userRef = useRef<HTMLDivElement | null>(null)
 
   useOutsideDismiss(moduleRef, () => setIsModuleOpen(false), isModuleOpen)
   useOutsideDismiss(userRef, () => setIsUserOpen(false), isUserOpen)
+
+  const isAdmin = user?.perfis?.some(perfil => 
+    perfil === 'ROLE_ADMIN' || perfil === 'ADMIN'
+  ) ?? false
 
   const go = (path: string) => {
     navigate(path)
@@ -58,7 +68,6 @@ export const AppHeader = () => {
         >
           <Image src={logo} alt="Bahia Brindes" h={{ base: '26px', md: '30px' }} />
         </Box>
-
         <HStack gap={3} align="center">
           {/* Seletor de módulo */}
           <Box position="relative" ref={moduleRef}>
@@ -84,7 +93,6 @@ export const AppHeader = () => {
                 <ChevronDownIcon color="gray.600" />
               </HStack>
             </Button>
-
             {isModuleOpen && (
               <Box
                 position="absolute"
@@ -99,6 +107,10 @@ export const AppHeader = () => {
                 minW="240px"
               >
                 {APP_MODULES.map((m) => {
+                  if (m.key === 'admin' && !isAdmin) {
+                    return null
+                  }
+
                   const isSelected = selectedModule?.key === m.key
                   return (
                     <Button
@@ -148,7 +160,6 @@ export const AppHeader = () => {
             >
               <UserCircleIcon size={28} color="gray.900" />
             </Button>
-
             {isUserOpen && (
               <Box
                 position="absolute"
@@ -170,9 +181,7 @@ export const AppHeader = () => {
                     Descrição da Ocupação ({roleLabelFromPerfis(user?.perfis)})
                   </Text>
                 </Box>
-
                 <Box h="1px" bg="gray.100" />
-
                 <VStack align="stretch" gap={0} py={2}>
                   <Button
                     variant="ghost"
@@ -192,7 +201,6 @@ export const AppHeader = () => {
                       <Text>Meu perfil</Text>
                     </HStack>
                   </Button>
-
                   <Button
                     variant="ghost"
                     justifyContent="flex-start"
@@ -212,7 +220,6 @@ export const AppHeader = () => {
                     </HStack>
                   </Button>
                 </VStack>
-
                 <Box px={4} pb={3} display="flex" justifyContent="flex-end">
                   <Button
                     size="sm"
@@ -236,4 +243,3 @@ export const AppHeader = () => {
     </Box>
   )
 }
-

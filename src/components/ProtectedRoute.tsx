@@ -1,13 +1,18 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
 import { Box, Spinner, VStack } from '@chakra-ui/react'
 
 interface ProtectedRouteProps {
-  children: React.ReactNode
+  children?: React.ReactNode
   allowCliente?: boolean
+  requireAdmin?: boolean
 }
 
-export const ProtectedRoute = ({ children, allowCliente = false }: ProtectedRouteProps) => {
+export const ProtectedRoute = ({
+  children,
+  allowCliente = false,
+  requireAdmin = false
+}: ProtectedRouteProps) => {
   const { isAuthenticated, loading, user } = useAuth()
 
   if (loading) {
@@ -33,5 +38,15 @@ export const ProtectedRoute = ({ children, allowCliente = false }: ProtectedRout
     return <Navigate to="/" replace />
   }
 
-  return <>{children}</>
+  if (requireAdmin) {
+    const isAdmin = user?.perfis?.some(perfil =>
+      perfil === 'ROLE_ADMIN' || perfil === 'ADMIN'
+    ) ?? false
+
+    if (!isAdmin) {
+      return <Navigate to="/portal-interno" replace />
+    }
+  }
+
+  return children ? <>{children}</> : <Outlet />
 }

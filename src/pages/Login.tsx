@@ -57,7 +57,6 @@ export const Login = () => {
     if (loading || !isAuthenticated || !user) {
       return
     }
-
     navigate(user.tipoUsuario === 'CLIENTE' ? '/' : APP_DEFAULT_PATH, { replace: true })
   }, [isAuthenticated, loading, navigate, user])
 
@@ -65,7 +64,6 @@ export const Login = () => {
     e.preventDefault()
     setError('')
     setIsLoading(true)
-
     try {
       const loggedUser = await login(email, senha)
       navigate(loggedUser.tipoUsuario === 'CLIENTE' ? '/' : APP_DEFAULT_PATH)
